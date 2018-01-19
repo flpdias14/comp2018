@@ -1,0 +1,442 @@
+Terminais sem uso na gramática
+
+   INT
+   FLOAT
+   PRINT
+   EXPR
+   ATTR
+   ADD
+   SUB
+   MULT
+   DIV
+
+
+Gramática
+
+    0 $accept: program $end
+
+    1 program: program bloco
+    2        | %empty
+
+    3 $@1: %empty
+
+    4 bloco: '{' $@1 decls stmts '}'
+
+    5 decls: decls decl
+    6      | %empty
+
+    7 decl: TYPE ID ';'
+
+    8 stmts: stmts stmt
+    9      | %empty
+
+   10 stmt: expr ';'
+   11     | bloco
+   12     | attr
+
+   13 attr: ID '=' expr ';'
+
+   14 expr: NUMBER
+   15     | ID
+   16     | expr '*' expr
+   17     | expr '/' expr
+   18     | expr '+' expr
+   19     | expr '-' expr
+   20     | '(' expr ')'
+
+
+Terminais, com as regras onde eles aparecem
+
+$end (0) 0
+'(' (40) 20
+')' (41) 20
+'*' (42) 16
+'+' (43) 18
+'-' (45) 19
+'/' (47) 17
+';' (59) 7 10 13
+'=' (61) 13
+'{' (123) 4
+'}' (125) 4
+error (256)
+TYPE (258) 7
+INT (259)
+FLOAT (260)
+PRINT (261)
+NUMBER (262) 14
+ID (263) 7 13 15
+EXPR (264)
+ATTR (265)
+ADD (266)
+SUB (267)
+MULT (268)
+DIV (269)
+
+
+Não terminais com as regras onde eles aparecem
+
+$accept (25)
+    à esquerda: 0
+program (26)
+    à esquerda: 1 2, à direita: 0 1
+bloco (27)
+    à esquerda: 4, à direita: 1 11
+$@1 (28)
+    à esquerda: 3, à direita: 4
+decls (29)
+    à esquerda: 5 6, à direita: 4 5
+decl (30)
+    à esquerda: 7, à direita: 5
+stmts (31)
+    à esquerda: 8 9, à direita: 4 8
+stmt (32)
+    à esquerda: 10 11 12, à direita: 8
+attr (33)
+    à esquerda: 13, à direita: 12
+expr (34)
+    à esquerda: 14 15 16 17 18 19 20, à direita: 10 13 16 17 18 19
+    20
+
+
+Estado 0
+
+    0 $accept: . program $end
+
+    $padrão  reduzir usando a regra 2 (program)
+
+    program  ir ao estado 1
+
+
+Estado 1
+
+    0 $accept: program . $end
+    1 program: program . bloco
+
+    $end  deslocar, e ir ao estado 2
+    '{'   deslocar, e ir ao estado 3
+
+    bloco  ir ao estado 4
+
+
+Estado 2
+
+    0 $accept: program $end .
+
+    $padrão  aceitar
+
+
+Estado 3
+
+    4 bloco: '{' . $@1 decls stmts '}'
+
+    $padrão  reduzir usando a regra 3 ($@1)
+
+    $@1  ir ao estado 5
+
+
+Estado 4
+
+    1 program: program bloco .
+
+    $padrão  reduzir usando a regra 1 (program)
+
+
+Estado 5
+
+    4 bloco: '{' $@1 . decls stmts '}'
+
+    $padrão  reduzir usando a regra 6 (decls)
+
+    decls  ir ao estado 6
+
+
+Estado 6
+
+    4 bloco: '{' $@1 decls . stmts '}'
+    5 decls: decls . decl
+
+    TYPE  deslocar, e ir ao estado 7
+
+    $padrão  reduzir usando a regra 9 (stmts)
+
+    decl   ir ao estado 8
+    stmts  ir ao estado 9
+
+
+Estado 7
+
+    7 decl: TYPE . ID ';'
+
+    ID  deslocar, e ir ao estado 10
+
+
+Estado 8
+
+    5 decls: decls decl .
+
+    $padrão  reduzir usando a regra 5 (decls)
+
+
+Estado 9
+
+    4 bloco: '{' $@1 decls stmts . '}'
+    8 stmts: stmts . stmt
+
+    NUMBER  deslocar, e ir ao estado 11
+    ID      deslocar, e ir ao estado 12
+    '{'     deslocar, e ir ao estado 3
+    '}'     deslocar, e ir ao estado 13
+    '('     deslocar, e ir ao estado 14
+
+    bloco  ir ao estado 15
+    stmt   ir ao estado 16
+    attr   ir ao estado 17
+    expr   ir ao estado 18
+
+
+Estado 10
+
+    7 decl: TYPE ID . ';'
+
+    ';'  deslocar, e ir ao estado 19
+
+
+Estado 11
+
+   14 expr: NUMBER .
+
+    $padrão  reduzir usando a regra 14 (expr)
+
+
+Estado 12
+
+   13 attr: ID . '=' expr ';'
+   15 expr: ID .
+
+    '='  deslocar, e ir ao estado 20
+
+    $padrão  reduzir usando a regra 15 (expr)
+
+
+Estado 13
+
+    4 bloco: '{' $@1 decls stmts '}' .
+
+    $padrão  reduzir usando a regra 4 (bloco)
+
+
+Estado 14
+
+   20 expr: '(' . expr ')'
+
+    NUMBER  deslocar, e ir ao estado 11
+    ID      deslocar, e ir ao estado 21
+    '('     deslocar, e ir ao estado 14
+
+    expr  ir ao estado 22
+
+
+Estado 15
+
+   11 stmt: bloco .
+
+    $padrão  reduzir usando a regra 11 (stmt)
+
+
+Estado 16
+
+    8 stmts: stmts stmt .
+
+    $padrão  reduzir usando a regra 8 (stmts)
+
+
+Estado 17
+
+   12 stmt: attr .
+
+    $padrão  reduzir usando a regra 12 (stmt)
+
+
+Estado 18
+
+   10 stmt: expr . ';'
+   16 expr: expr . '*' expr
+   17     | expr . '/' expr
+   18     | expr . '+' expr
+   19     | expr . '-' expr
+
+    '+'  deslocar, e ir ao estado 23
+    '-'  deslocar, e ir ao estado 24
+    '/'  deslocar, e ir ao estado 25
+    '*'  deslocar, e ir ao estado 26
+    ';'  deslocar, e ir ao estado 27
+
+
+Estado 19
+
+    7 decl: TYPE ID ';' .
+
+    $padrão  reduzir usando a regra 7 (decl)
+
+
+Estado 20
+
+   13 attr: ID '=' . expr ';'
+
+    NUMBER  deslocar, e ir ao estado 11
+    ID      deslocar, e ir ao estado 21
+    '('     deslocar, e ir ao estado 14
+
+    expr  ir ao estado 28
+
+
+Estado 21
+
+   15 expr: ID .
+
+    $padrão  reduzir usando a regra 15 (expr)
+
+
+Estado 22
+
+   16 expr: expr . '*' expr
+   17     | expr . '/' expr
+   18     | expr . '+' expr
+   19     | expr . '-' expr
+   20     | '(' expr . ')'
+
+    '+'  deslocar, e ir ao estado 23
+    '-'  deslocar, e ir ao estado 24
+    '/'  deslocar, e ir ao estado 25
+    '*'  deslocar, e ir ao estado 26
+    ')'  deslocar, e ir ao estado 29
+
+
+Estado 23
+
+   18 expr: expr '+' . expr
+
+    NUMBER  deslocar, e ir ao estado 11
+    ID      deslocar, e ir ao estado 21
+    '('     deslocar, e ir ao estado 14
+
+    expr  ir ao estado 30
+
+
+Estado 24
+
+   19 expr: expr '-' . expr
+
+    NUMBER  deslocar, e ir ao estado 11
+    ID      deslocar, e ir ao estado 21
+    '('     deslocar, e ir ao estado 14
+
+    expr  ir ao estado 31
+
+
+Estado 25
+
+   17 expr: expr '/' . expr
+
+    NUMBER  deslocar, e ir ao estado 11
+    ID      deslocar, e ir ao estado 21
+    '('     deslocar, e ir ao estado 14
+
+    expr  ir ao estado 32
+
+
+Estado 26
+
+   16 expr: expr '*' . expr
+
+    NUMBER  deslocar, e ir ao estado 11
+    ID      deslocar, e ir ao estado 21
+    '('     deslocar, e ir ao estado 14
+
+    expr  ir ao estado 33
+
+
+Estado 27
+
+   10 stmt: expr ';' .
+
+    $padrão  reduzir usando a regra 10 (stmt)
+
+
+Estado 28
+
+   13 attr: ID '=' expr . ';'
+   16 expr: expr . '*' expr
+   17     | expr . '/' expr
+   18     | expr . '+' expr
+   19     | expr . '-' expr
+
+    '+'  deslocar, e ir ao estado 23
+    '-'  deslocar, e ir ao estado 24
+    '/'  deslocar, e ir ao estado 25
+    '*'  deslocar, e ir ao estado 26
+    ';'  deslocar, e ir ao estado 34
+
+
+Estado 29
+
+   20 expr: '(' expr ')' .
+
+    $padrão  reduzir usando a regra 20 (expr)
+
+
+Estado 30
+
+   16 expr: expr . '*' expr
+   17     | expr . '/' expr
+   18     | expr . '+' expr
+   18     | expr '+' expr .
+   19     | expr . '-' expr
+
+    '/'  deslocar, e ir ao estado 25
+    '*'  deslocar, e ir ao estado 26
+
+    $padrão  reduzir usando a regra 18 (expr)
+
+
+Estado 31
+
+   16 expr: expr . '*' expr
+   17     | expr . '/' expr
+   18     | expr . '+' expr
+   19     | expr . '-' expr
+   19     | expr '-' expr .
+
+    '/'  deslocar, e ir ao estado 25
+    '*'  deslocar, e ir ao estado 26
+
+    $padrão  reduzir usando a regra 19 (expr)
+
+
+Estado 32
+
+   16 expr: expr . '*' expr
+   17     | expr . '/' expr
+   17     | expr '/' expr .
+   18     | expr . '+' expr
+   19     | expr . '-' expr
+
+    $padrão  reduzir usando a regra 17 (expr)
+
+
+Estado 33
+
+   16 expr: expr . '*' expr
+   16     | expr '*' expr .
+   17     | expr . '/' expr
+   18     | expr . '+' expr
+   19     | expr . '-' expr
+
+    $padrão  reduzir usando a regra 16 (expr)
+
+
+Estado 34
+
+   13 attr: ID '=' expr ';' .
+
+    $padrão  reduzir usando a regra 13 (attr)
